@@ -19,6 +19,10 @@ The project is organized into two main branches:
 - `test_model.py` - Test script for model validation
 - `setup_test_images.py` - Script to download test images
 
+### Web UI
+- `app.py` - Flask web application for image upload and classification
+- `templates/index.html` - Web interface template for uploading images
+
 ## Setup & Installation
 
 1. Clone the repository:
@@ -46,16 +50,33 @@ python setup_test_images.py
 - `python-multipart>=0.0.5` - Multipart form data parsing
 - `pillow>=8.0.0` - Image processing
 - `requests>=2.31.0` - HTTP requests for testing
+- `flask>=3.0.0` - Flask web framework
+- `pytest>=8.0.0` - Testing framework
+- `httpx>=0.20.0` - HTTP client for testing
+- `werkzeug>=3.0.0` - WSGI utilities
 
 ## Usage
 
-1. Start the API server:
+### Running the Backend API
+
+1. Start the FastAPI server:
 ```bash
-python main.py
+python -m uvicorn main:app --reload
 ```
 The server will start at `http://localhost:8000`
 
-2. Test the model:
+### Running the Web Interface
+
+1. Start the Flask web application (in a separate terminal):
+```bash
+python app.py
+```
+The web interface will be available at `http://localhost:5000`
+
+2. Access the web interface in your browser, upload an image, and get AI predictions
+
+### Testing the Model Directly
+
 ```bash
 python test_model.py
 ```
@@ -88,13 +109,23 @@ Response:
 ## Testing
 
 The test suite includes:
-- Local image testing
-- Numpy array testing
-- Downloaded image testing
+- API endpoint testing
+- Model prediction testing
+- Web interface testing
 
-Run tests with:
+Run API tests with:
+```bash
+pytest test_main.py
+```
+
+Run model tests with:
 ```bash
 python test_model.py
+```
+
+Run all tests:
+```bash
+pytest
 ```
 
 ## Model Details
