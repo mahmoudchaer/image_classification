@@ -8,4 +8,4 @@ httpx==0.28.1
 python-multipart==0.0.20
 flask==3.0.0
 requests==2.31.0
-werkzeug==3.0.1 
+werkzeug==3.0.1
