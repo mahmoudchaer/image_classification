@@ -3,6 +3,7 @@ import torchvision.models as models
 from torchvision import transforms
 from PIL import Image
 import io
+import numpy as np
 
 class ImageClassifier:
     def __init__(self):
@@ -66,6 +67,38 @@ class ImageClassifier:
         except Exception as e:
             raise ValueError(f"Error processing image: {str(e)}")
     
+    def process_image_array(self, image_array: np.ndarray) -> torch.Tensor:
+        """
+        Process a numpy array image and convert it to a tensor.
+        
+        Args:
+            image_array (np.ndarray): Input image as numpy array
+            
+        Returns:
+            torch.Tensor: Preprocessed image tensor ready for model input
+            
+        Raises:
+            ValueError: If the image cannot be processed
+        """
+        try:
+            # Convert numpy array to PIL Image
+            if image_array.ndim == 2:  # Grayscale image
+                image = Image.fromarray(image_array)
+            else:  # RGB image
+                image = Image.fromarray(image_array)
+            
+            # Convert to RGB if necessary
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+            
+            # Apply preprocessing transformations
+            tensor = self.preprocess_image(image)
+            
+            return tensor
+            
+        except Exception as e:
+            raise ValueError(f"Error processing image array: {str(e)}")
+    
     def predict(self, image):
         """Make a prediction on the input image."""
         with torch.no_grad():
@@ -77,6 +110,34 @@ class ImageClassifier:
                 "prediction": self.labels[predicted_idx],
                 "confidence": confidence.item()
             }
+    
+    def predict_image(self, image_input):
+        """
+        Unified prediction function that accepts either a file upload or image array.
+        
+        Args:
+            image_input: Either bytes (file upload) or numpy array
+            
+        Returns:
+            dict: Prediction result containing prediction and confidence
+            
+        Raises:
+            ValueError: If the input format is not supported or processing fails
+        """
+        try:
+            # Process the image based on input type
+            if isinstance(image_input, bytes):
+                tensor = self.process_uploaded_image(image_input)
+            elif isinstance(image_input, np.ndarray):
+                tensor = self.process_image_array(image_input)
+            else:
+                raise ValueError("Unsupported input type. Must be bytes (file upload) or numpy array.")
+            
+            # Make prediction
+            return self.predict(tensor)
+            
+        except Exception as e:
+            raise ValueError(f"Error in predict_image: {str(e)}")
 
 # Create a global instance of the classifier
 classifier = ImageClassifier() 
