@@ -6,12 +6,12 @@ A collaborative FastAPI project that provides image classification using a pre-t
 
 The project is organized into two main branches:
 
-### Branch-a (API Endpoints)
+### Branch-a (Mahmoud) (API Endpoints)
 - `main.py` - FastAPI application with endpoints
   - `/status` - GET endpoint to check API health
   - `/predict` - POST endpoint for image classification
 
-### Branch-b (Model Implementation)
+### Branch-b (Hussein) (Model Implementation)
 - `model.py` - Image classification implementation
   - Pre-trained ResNet18 model
   - Image preprocessing utilities
