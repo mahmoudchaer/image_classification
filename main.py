@@ -1,6 +1,8 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 import uvicorn
+import io
+from model import classifier
 
 app = FastAPI(
     title="Image Classification API",
@@ -15,7 +17,16 @@ async def status():
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    return {"prediction": "dog", "confidence": 0.99}
+    try:
+        # Read the image file
+        contents = await file.read()
+        
+        # Use the model to predict
+        result = classifier.predict_image(contents)
+        
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 
